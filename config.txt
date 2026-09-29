@@ -1,0 +1,3 @@
+BACKUP_DIR=C:/Synthetix/Backups
+ERROR_LOG_DIR=C:/Synthetix/Logs
+API_URL=https://httpbin.org/post
