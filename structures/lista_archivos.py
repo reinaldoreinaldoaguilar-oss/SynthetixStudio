@@ -1,14 +1,13 @@
-import urllib.request # <--- AÑADIDO: Para conexión HTTP nativa
-import json           # <--- AÑADIDO: Para enviar el código limpio
-from structures.estructuras import Pila, Cola # <--- AÑADIDO: Importamos Cola
+import urllib.request
+import json           
+from structures.estructuras import Pila, Cola 
 from core.motor_ordenamiento import Diagnostico, MotorOrdenamiento
-from core.config_manager import ConfigManager # <--- AÑADIDO: Para leer la URL
+from core.config_manager import ConfigManager 
 
 class NodoArchivo:
     def __init__(self, nombre):
         self.nombre = nombre
         self.contenido = ""
-        # Pilas independientes para el historial de CADA archivo
         self.pila_undo = Pila()
         self.pila_redo = Pila()
         self.siguiente = None
@@ -17,7 +16,7 @@ class ListaArchivos:
     def __init__(self):
         self.cabeza = None
         self.archivo_activo = None
-        self.cola_peticiones_ia = Cola() # <--- AÑADIDO: Cola FIFO para la API
+        self.cola_peticiones_ia = Cola() 
 
     def crear_archivo(self, nombre):
         nuevo = NodoArchivo(nombre)
@@ -87,9 +86,9 @@ class ListaArchivos:
             print("[ERROR] No hay archivo activo para escribir.")
             return
         
-        # 1. Guardamos el estado en Undo ANTES de modificar
+
         self.archivo_activo.pila_undo.apilar(self.archivo_activo.contenido)
-        # 2. Vaciamos Redo porque al escribir se rompe el futuro
+
         self.archivo_activo.pila_redo.vaciar()
 
         self.archivo_activo.contenido += texto + "\n"
@@ -102,15 +101,14 @@ class ListaArchivos:
         print(self.archivo_activo.contenido, end="")
         print("---------------------------------")
 
-    # --- METODOS PARTE 2: HISTORIAL Y SINTAXIS ---
     def deshacer(self):
         if self.archivo_activo is None: return
         if self.archivo_activo.pila_undo.esta_vacia():
             print("[INFO] No hay mas acciones para deshacer.")
             return
-        # Guardar presente en Redo
+
         self.archivo_activo.pila_redo.apilar(self.archivo_activo.contenido)
-        # Volver al pasado
+
         self.archivo_activo.contenido = self.archivo_activo.pila_undo.desapilar()
         print("[OK] Cambio deshecho (Undo).")
 
@@ -119,7 +117,6 @@ class ListaArchivos:
         if self.archivo_activo.pila_redo.esta_vacia():
             print("[INFO] No hay mas acciones para rehacer.")
             return
-        # Guardar presente en Undo
         self.archivo_activo.pila_undo.apilar(self.archivo_activo.contenido)
         # Volver al futuro
         self.archivo_activo.contenido = self.archivo_activo.pila_redo.desapilar()
@@ -164,7 +161,6 @@ class ListaArchivos:
             print("[ERROR] No hay archivo activo para analizar.")
             return
         
-        # Generamos alertas de prueba como pide el documento
         alertas = [
             Diagnostico(15, 2, "Variable 'x' declarada pero sin uso."),
             Diagnostico(3, 5, "Error de sintaxis: Falta punto y coma."),
@@ -187,7 +183,6 @@ class ListaArchivos:
             print(f"[Linea {alerta.linea}] (Gravedad: {alerta.gravedad}) -> {alerta.mensaje}")
         print("--------------------------------------")
 
-    # --- NUEVOS MÉTODOS PARTE 4 y 5: API Y RED ---
     def encolar_peticion_ia(self):
         if self.archivo_activo is None:
             print("[ERROR] No hay archivo activo para analizar.")
@@ -215,7 +210,6 @@ class ListaArchivos:
         print("\n>>> CONECTANDO CON EL SERVIDOR HTTP >>>")
         print(f"Endpoint: {ConfigManager.api_url}")
         
-        # Enviar petición POST en JSON nativo de Python (Sin errores de consola)
         data = json.dumps({"codigo": codigo_fuente}).encode('utf-8')
         req = urllib.request.Request(ConfigManager.api_url, data=data, headers={'Content-Type': 'application/json'})
         

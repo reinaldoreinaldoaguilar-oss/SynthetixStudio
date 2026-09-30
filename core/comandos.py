@@ -46,8 +46,6 @@ class CommandConfig(ICommand):
     def execute(self):
         ConfigManager.cargar_configuracion(self.ruta)
 
-# (Pon esto debajo de CommandConfig en core/comandos.py)
-
 class CommandShow(ICommand):
     def __init__(self, receptor):
         self.receptor = receptor
@@ -97,3 +95,24 @@ class CommandProcess(ICommand):
         self.receptor = receptor
     def execute(self):
         self.receptor.procesar_cola_ia()
+
+class CommandHelp(ICommand):
+    def execute(self):
+        print("\n--- COMANDOS DISPONIBLES EN SYNTHETIX STUDIO ---")
+        print(" help                : Muestra esta lista de comandos.")
+        print(" config <archivo>    : Carga la URL de la API (ej. config config.txt).")
+        print(" new <nombre>        : Crea un nuevo archivo y lo pone activo.")
+        print(" switch <nombre>     : Cambia a otro archivo abierto.")
+        print(" list                : Muestra todos los archivos abiertos.")
+        print(" delete <nombre>     : Elimina un archivo.")
+        print(" write <texto>       : Agrega una linea al archivo activo.")
+        print(" show                : Muestra el codigo del archivo activo.")
+        print(" undo                : Deshace el ultimo 'write' (LIFO).")
+        print(" redo                : Rehace el ultimo 'undo' (LIFO).")
+        print(" check               : Revisa llaves y corchetes abiertos (Sintaxis).")
+        print(" sort <crit> <algo>  : Ordena errores (ej. sort line mergesort).")
+        print(" analyze             : Encola el archivo activo (Buffer FIFO).")
+        print(" queue-status        : Muestra el estado del Buffer FIFO.")
+        print(" process             : Desencola y envia a internet (HTTP POST).")
+        print(" exit / salir        : Cierra la aplicacion.")
+        print("------------------------------------------------")

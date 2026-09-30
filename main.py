@@ -3,7 +3,8 @@ from core.comandos import (
     CommandNew, CommandList, CommandSwitch, 
     CommandDelete, CommandWrite, CommandConfig,
     CommandShow, CommandUndo, CommandRedo, CommandCheck,
-    CommandSort, CommandAnalyze, CommandQueueStatus, CommandProcess # <--- TODO AÑADIDO
+    CommandSort, CommandAnalyze, CommandQueueStatus, CommandProcess, 
+    CommandHelp 
 )
 
 def main():
@@ -54,17 +55,22 @@ def main():
             else:
                 print("[ERROR] Faltan parametros. Uso: sort <criterio> <algoritmo>")
                 
-        # ---> NUEVOS COMANDOS PARTE 4 Y 5 <---
+        
         elif comando == "analyze":
             cmd = CommandAnalyze(gestor_archivos)
         elif comando == "queue-status":
             cmd = CommandQueueStatus(gestor_archivos)
         elif comando == "process":
             cmd = CommandProcess(gestor_archivos)
-        # ---------------------------------------
+            
+        
+        elif comando == "help":
+            cmd = CommandHelp()
+        
         
         else:
-            print("[ERROR] Comando no reconocido o faltan argumentos.")
+            
+            print("[ERROR] Comando no reconocido o faltan argumentos. Escribe 'help' para ver la lista de comandos.")
 
         if cmd:
             cmd.execute()
